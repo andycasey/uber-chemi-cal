@@ -6,24 +6,26 @@ data {
   int<lower=1> D; // dimensionality of the data (number of labels)
   int<lower=1> M; // number of surveys (or studies)
   vector[D] y[N, M]; // the labels as reported by various surveys.
-  vector[D] scales; // the fixed scales for different labels
+  vector<lower=0>[D] scales; // fixed relative scales for latent factors
 }
 
-
+/*
 transformed data {
   // todo: remove means from the data rather than assuming the user did
   vector[D] mu; // mean values of the data.
   mu = rep_vector(0.0, D);
 }
+*/
 
 parameters {
-  vector[D] X[N]; 
-  vector[D] theta[M];
+  vector[D] X[N]; // latent factors for each star
+  vector[D] theta[M]; // survey transformations
 
   vector<lower=0>[D] psi; // intrinsic variance in labels
-  vector<lower=0>[M, D] phi; // variance on survey labels
+  vector<lower=0>[M] phi[D]; // variance on survey labels
 }
 
+/*
 transformed parameters {
   cov_matrix[D] Sigma[M];
   // TODO: this is inefficient (for indexing, ram, etc)
@@ -31,16 +33,27 @@ transformed parameters {
     for (d in 1:D)
       Sigma[d, m] = phi[m, d] + psi[d];
 }
+*/
 
 model {
-  // TODO: Check that Stan is vectorizing this as we expect!
-  theta ~ normal(0, 1);
-
-  for (i in 1:D) {
+  for (d in 1:D) {
     // TODO: Check that Stan is vectorizing this as we expect!
-    X[d] ~ normal(rep_vector(0, N), rep_vector(scales[d], N));
+    // todo: improve this shit
+    X[:, d] ~ normal(rep_vector(0, N), rep_vector(scales[d], N));
+    theta[:, d] ~ normal(rep_vector(0, M), rep_vector(1, M));
+    psi[d] ~ normal(0, 1);
+    phi[d, :] ~ normal(rep_vector(0, M), rep_vector(1, M));
   }
 
-  // this is wrong
-  y ~ multi_normal(X * theta - mu, Sigma);
+  // so inefficient
+  for (n in 1:N) {
+    for (m in 1:M) {
+      vector[D] mu;
+      vector[D] sigma;
+      mu = rows_dot_product(X[n], theta[m]);
+      sigma = sqrt(to_vector(phi[:, m]) + psi);
+
+      y[n, m] ~ normal(mu, sigma);
+    }
+  }
 }

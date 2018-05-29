@@ -40,6 +40,11 @@ def generate_data(N, M, D, scales=None, seed=None):
     if scales is None:
         scales = np.abs(np.random.normal(0, 1, size=D))
 
+    else:
+        scales = np.array(scales)
+
+    assert len(scales) == D
+
     X = np.random.normal(
         np.zeros(D),
         scales**2,
@@ -69,9 +74,28 @@ def generate_data(N, M, D, scales=None, seed=None):
     return (y, truths)
 
 
-y, truths = generate_data(N=256, M=3, D=5)
+# Generate some data.
+N, M, D = (256, 3, 5)
+scales = [250, 0.2, 0.1, 0.1, 0.1]
 
-assert 0
+y, truths = generate_data(N=N, M=M, D=D, scales=scales)
 
-model = stan.read_model("toy-model.stan")
+
+# Construct a model and optimize it (from the true values).
+model = stan.read_model("toy_model.stan")
+
+data = dict(y=y, N=N, M=M, D=D, scales=scales)
+init = dict(X=truths["X"], theta=truths["theta"].T, psi=truths["psi"],
+            phi=truths["phi"].T)
+
+p_opt_ft = model.optimizing(data=data, init=init)
+
+# initialize from a random position.
+p_opt_fr = model.optimizing(data=data)
+
+
+# Plot some things.
+
+
+
 
