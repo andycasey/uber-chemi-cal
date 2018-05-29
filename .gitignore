@@ -4,3 +4,4 @@
 __pycache__/
 
 *.stan.cached
+.ipynb_checkpoints/

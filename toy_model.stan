@@ -48,12 +48,9 @@ model {
   // so inefficient
   for (n in 1:N) {
     for (m in 1:M) {
-      vector[D] mu;
-      vector[D] sigma;
-      mu = rows_dot_product(X[n], theta[m]);
-      sigma = sqrt(to_vector(phi[:, m]) + psi);
-
-      y[n, m] ~ normal(mu, sigma);
+      //print("n m mu", n, m, mu);
+      y[n, m] ~ normal(rows_dot_product(X[n], theta[m]),
+                       sqrt(to_vector(phi[:, m]) + psi));
     }
   }
 }

@@ -2,6 +2,8 @@
 # A matplotlib style based on the gala package by @adrn:
 # github.com/adrn/gala
 
+import numpy as np
+
 mpl_style = {
 
     # Lines
@@ -68,3 +70,18 @@ mpl_style = {
     # Other
     'savefig.dpi': 300,
 }
+
+def common_limits(ax, plot_one_to_one=False, **kwargs):
+
+    limits = np.hstack([ax.get_xlim(), ax.get_ylim()])
+    limits = (np.nanmin(limits), np.nanmax(limits))
+
+    if plot_one_to_one:
+        kwds = dict(c="#666666", linestyle=":")
+        kwds.update(kwargs)
+        ax.plot(limits, limits, **kwds)
+
+    ax.set_xlim(limits)
+    ax.set_ylim(limits)
+
+    return limits
