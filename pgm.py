@@ -23,3 +23,4 @@ if __name__ == "__main__":
     pgm.add_edge("sigma", "obs")
     pgm.render()
     pgm.figure.savefig("pgm.pdf")
+    pgm.figure.savefig("pgm.png", dpi=300)
