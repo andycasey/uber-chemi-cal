@@ -54,6 +54,7 @@ transformed parameters {
   }
 }
 
+/*
 model {
   L_lower_triangular ~ normal(rep_vector(0, Q), rep_vector(1, Q));
 
@@ -71,4 +72,24 @@ model {
       y[n, m, :] ~ normal(to_row_vector(X[n]) * theta[m], 
                           sqrt(to_vector(phi[:, m]) + extra_variance[n, m, :]));
 }
+*/
+model {
 
+  // Place priors on various properties.
+  for (d in 1:D) {
+    X[:, d] ~ normal(rep_vector(0, N), rep_vector(1, N));
+    phi[d] ~ normal(rep_vector(0, M), rep_vector(1, M));
+
+    // TODO: Should we be placing an inverted Wishart prior or something on this
+    //       shit?
+    //L_lower_triangular
+
+    // TODO: revisit this prior
+    L_diag[d] ~ normal(rep_vector(1, M), rep_vector(0.1, M));
+  }
+
+  for (n in 1:N) 
+    for (m in 1:M)
+      y[n, m, :] ~ normal(to_row_vector(X[n]) * theta[m], 
+                          sqrt(to_vector(phi[:, m]) + extra_variance[n, m, :]));
+}
