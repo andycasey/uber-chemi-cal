@@ -7,5 +7,5 @@ if [ -n "$GITHUB_API_KEY" ]; then
   git rm -rf .
   git add -f paper/uberchemical.pdf
   git -c user.name='travis' -c user.email='travis' commit -m "building the paper"
-  git push -q -f https://andycasey:$GITHUB_API_KEY@github.com/andycasey/uberchemical pdf
+  git push -q -f https://andycasey:$GITHUB_API_KEY@github.com/$TRAVIS_REPO_SLUG pdf
 fi
