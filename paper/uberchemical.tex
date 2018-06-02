@@ -1,6 +1,7 @@
 \documentclass[twocolumn]{aastex61}
 \usepackage{bm}
 \usepackage{color}
+\usepackage{graphicx}
 
 \newcommand\teff{T_{\rm eff}}
 \newcommand\logg{\log{g}}
@@ -16,7 +17,7 @@
 \revised{2018 XX XX}
 \accepted{2018 XX XX}
 
-%\graphicspath{../figures}
+\graphicspath{figures/}
 
 \submitjournal{AAS Journals}
 
@@ -71,6 +72,14 @@ Abstract.
 \label{sec:methods}
 
 
+
+
+\begin{figure}
+	\includegraphics[width=0.5\textwidth]{figures/pgm.png}
+    \caption{Probabilistic graphical model.}
+\end{figure}
+
+
 \acknowledgements
 
 It is a pleasure to thank
@@ -87,6 +96,7 @@ through Discovery Grant DP160100637.
     \package{numpy} \citep{numpy},
     \package{scipy} \citep{scipy},
     \package{Stan} \citep{stan},
+    \package{Daft} %http://daft-pgm.org/
     %tensorflow
 }    
 
