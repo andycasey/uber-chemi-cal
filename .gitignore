@@ -6,3 +6,9 @@ __pycache__/
 
 *.stan.cached
 .ipynb_checkpoints/
+
+paper/*.aux
+paper/*.synctex.gz
+paper/*.pdf
+paper/*Notes.bib
+paper/*.log
