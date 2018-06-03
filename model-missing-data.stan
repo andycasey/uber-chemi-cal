@@ -24,8 +24,8 @@ parameters {
 
   vector[Q] L_lower_triangular; // lower triangular entries of the decomposition
                                 // of the  theta matrix
-  vector<lower=0>[M] L_diag[D]; // diagonal entries of the decomposition of the 
-                                // theta matrix
+  vector<lower=0, upper=2>[M] L_diag[D]; // diagonal entries of the decomposition of the 
+                                        // theta matrix
 }
 
 transformed parameters {
@@ -85,8 +85,9 @@ model {
     //L_lower_triangular
 
     // TODO: revisit this prior
-    L_diag[d] ~ normal(rep_vector(1, M), rep_vector(0.1, M));
+    L_diag[d] ~ normal(rep_vector(1, M), rep_vector(0.01, M));
   }
+  L_lower_triangular ~ normal(rep_vector(0, Q), rep_vector(0.01, Q));
 
   for (n in 1:N) 
     for (m in 1:M)
